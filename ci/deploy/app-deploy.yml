@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dummy-spring
+  labels:
+    app: dummy-spring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dummy-spring
+  template:
+    metadata:
+      labels:
+        app: dummy-spring
+    spec:
+      containers:
+        - name: dummy-spring
+          image: "410742650674.dkr.ecr.eu-west-1.amazonaws.com/dummy-spring:0.0.1"
+          ports:
+            - containerPort: 8080

@@ -1,0 +1,12 @@
+pipeline {   
+    agent any
+    stages {
+        stage('Deploy'){
+            steps {
+                withAWS(credentials: 'aws-creds-spring', region: 'eu-west-1') {
+                    sh 'kubectl apply -f app-deploy.yml'
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,22 @@
+pipeline {   
+    agent any
+    stages {
+        stage('Build'){
+            steps {
+                sh 'docker build -t helloworld:0.0.1-build docker/build'
+                sh 'docker run --rm -v $PWD:/app helloworld:0.0.1-build'
+                sh 'docker build -t helloworld:0.0.1-release .'
+            }
+        }
+
+        stage('Push to ECR'){
+            steps {
+                withAWS(credentials: 'aws-creds-spring', region: 'eu-west-1') {
+                    sh 'aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 410742650674.dkr.ecr.eu-west-1.amazonaws.com'
+                    sh 'docker tag helloworld:0.0.1-release 410742650674.dkr.ecr.eu-west-1.amazonaws.com/dummy-spring:latest'
+                    sh 'docker push 410742650674.dkr.ecr.eu-west-1.amazonaws.com/dummy-spring:0.0.1'
+                }
+            }
+        }
+    }
+}
